@@ -21,6 +21,6 @@ app.use('/parking', jwtMiddleware, parkingRouter);
 app.use(errorsMiddleware);
 
 // listening on port
-app.listen(process.env.port, () => {
-    console.log(`Parking Lot API Running at ${process.env.port}`)
+app.listen(process.env.PORT, () => {
+    console.log(`Parking Lot API Running at ${process.env.PORT}`)
 });
