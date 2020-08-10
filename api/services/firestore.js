@@ -1,4 +1,4 @@
-const admin = require('firebase-admin');
+const admin = require('./node_modules/firebase-admin');
 const serviceAccount = require('../constants/parkinglot-key.json');
 let db;
 try {
