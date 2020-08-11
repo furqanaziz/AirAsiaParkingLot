@@ -1,7 +1,9 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const { createTokens } = require('../middlewares/jwt');
-const { schema, values } = require('../constants');
+const { schema } = require('../constants');
 const { db } = require('../services/firestore');
+const { getToken } = require('../middlewares');
 
 const login = async (req, res, next) => {
   try {
@@ -52,7 +54,19 @@ const login = async (req, res, next) => {
 
 const logout = async (req, res, next) => {
   try {
-    const userSnapshot = await db.collection('users').where('email', '==', req.user.email).get();
+    const token = getToken(req);
+    if (!token) {
+      res.status(200).send({
+        message: 'User already logged out'
+      })
+    }
+    const jwtResponse = jwt.verify(token, process.env.JWT_TOKEN_SECRET);
+    if (!jwtResponse || !jwtResponse.user) {
+      res.status(200).send({
+        message: 'User already logged out'
+      })
+    }
+    const userSnapshot = await db.collection('users').where('email', '==', jwtResponse.user.email).get();
     if (userSnapshot && userSnapshot.docs.length) {
       const user = userSnapshot.docs[0].data();
       const response = await db.collection('users').doc(userSnapshot.docs[0].id)
@@ -61,10 +75,14 @@ const logout = async (req, res, next) => {
         res.status(200).send({
           message: 'logout successfull'
         })
+      } else {
+        res.status(500).send({
+          error: 'Could not logout user'
+        })
       }
     } else {
       res.status(400).send({
-        error: "Error while loggin out"
+        error: "User not found with registered email"
       })
       return
     }

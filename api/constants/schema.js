@@ -1,3 +1,4 @@
+/** Validations for input of APIs using Joi */
 const Joi = require('@hapi/joi');
 
 const LoginSchema = Joi.object().keys({
