@@ -5,9 +5,9 @@ const SECRET = process.env.JWT_TOKEN_SECRET;
 const SECRET_REFRESH_TOKEN = process.env.JWT_UPDATE_TOKEN_SECRET;
 
 const jwtMiddleware = async (req, res, next) => {
-  if (req.url.includes('login')) {
-    return next();
-  }
+  // if (req.url.includes('login')) {
+  //   return next();
+  // }
   const token = getToken(req);
   if (token) {
     try {
@@ -74,5 +74,6 @@ function getToken(req) {
 
 module.exports = {
   jwtMiddleware,
-  createTokens
+  createTokens,
+  getToken
 };

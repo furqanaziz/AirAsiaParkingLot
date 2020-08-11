@@ -28,19 +28,6 @@ const getNearestSpot = async () => {
   }
 }
 
-// const get = async (car) => {
-//   try {
-//     const snapshot = await db.collection('slots').where('alloted', '==', true).where('car.number', '==', car.number).get();
-//     return snapshot.docs.length || false;
-//   } catch (error) {
-//     console.log(error);
-//     throw new Error({
-//       success: false,
-//       message: error.message || 'Could not check car number',
-//     });
-//   }
-// }
-
 module.exports = {
   existingCarNumber,
   getNearestSpot

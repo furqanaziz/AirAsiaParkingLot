@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cors())
 
 // routes middlewares
-app.use('/auth', jwtMiddleware, authRouter);
+app.use('/auth', authRouter);
 app.use('/parking', jwtMiddleware, parkingRouter);
 
 app.use(errorsMiddleware);
