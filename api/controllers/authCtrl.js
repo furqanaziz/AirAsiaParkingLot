@@ -77,7 +77,7 @@ const logout = async (req, res, next) => {
         })
       } else {
         res.status(500).send({
-          message: 'Could not logout user'
+          error: 'Could not logout user'
         })
       }
     } else {
