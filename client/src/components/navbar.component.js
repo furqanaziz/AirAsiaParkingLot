@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
 
 export default class Navbar extends Component {
 
@@ -11,9 +10,6 @@ export default class Navbar extends Component {
         <Link to="/" className="navbar-brand">Parking Stats</Link>
         <div className="collpase navbar-collapse">
         <ul className="navbar-nav mr-auto">
-          {/* <li className="navbar-item">
-          <Link to="/" className="nav-link">Exercises</Link>
-          </li> */}
           <li className="navbar-item">
           <Link to="/parking" className="nav-link">Car Parking</Link>
           </li>

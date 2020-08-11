@@ -17,7 +17,6 @@ export default class FindCars extends Component {
 
     this.onChangeType = this.onChangeType.bind(this);
     this.onChangeNumber = this.onChangeNumber.bind(this);
-    //this.onSubmit = this.onSubmit.bind(this);
 
     this.state = {
       number: 0,
@@ -54,7 +53,6 @@ export default class FindCars extends Component {
       this.setState({ cars: res.data })
     }).catch((error) => {
         //toast('Slot Already Available. No car is Parked there.')
-      // console.log(error);
     })
   }
 
@@ -105,9 +103,6 @@ export default class FindCars extends Component {
               onChange={this.onChangeNumber}
               />
         </div>
-          {/* <div className="form-group row">
-            <input type="submit" value="Find Cars By Type" className="btn btn-primary" />
-          </div> */}
         </form>
         { this.state.cars.length > 0 ?
           <div>

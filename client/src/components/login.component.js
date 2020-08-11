@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import "./login.css";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default class Login extends Component {
     constructor(props){
@@ -37,10 +38,9 @@ export default class Login extends Component {
             localStorage.setItem('token', res.data.tokens.token)
             window.location = '/'
           }
-          //toast(`Car (${this.state.number}) is parked against the slot id: ${res.data.id}`);
         })
           .catch((error) => {
-            //toast('Car Already Parked')
+            toast('Invalid Credentials')
           //console.log(error.data.error);
       })
     }
@@ -82,6 +82,7 @@ render() {
               Login
             </Button>
           </form>
+          <ToastContainer/>
         </div>
       );
   }

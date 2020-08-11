@@ -42,10 +42,7 @@ export default class UnParking extends Component {
     })
       .catch((error) => {
         toast('Slot Already Available. No car is Parked there.')
-      // console.log(error);
     })
-
-    // window.location = '/';
   }
 
   render() {

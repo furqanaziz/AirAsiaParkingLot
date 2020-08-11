@@ -10,7 +10,6 @@ export default class Parking extends Component {
     this.onChangeNumber = this.onChangeNumber.bind(this);
     this.onChangeType = this.onChangeType.bind(this);
     this.onChangeColor = this.onChangeColor.bind(this);
-    //this.onChangeDate = this.onChangeDate.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
 
     this.state = {
@@ -70,9 +69,7 @@ export default class Parking extends Component {
     })
       .catch((error) => {
         toast('Car Already Parked')
-      //console.log(error.data.error);
     })
-    // window.location = '/';
   }
 
   render() {
@@ -107,16 +104,6 @@ export default class Parking extends Component {
               onChange={this.onChangeColor}
               />
         </div>
-        {/* <div className="form-group">
-          <label>Date: </label>
-          <div>
-            <DatePicker
-              selected={this.state.date}
-              onChange={this.onChangeDate}
-            />
-          </div>
-        </div> */}
-
         <div className="form-group">
           <input type="submit" value="Park New Car" className="btn btn-primary" />
         </div>
