@@ -80,7 +80,7 @@ const park = async (req, res, next) => {
     const { error } = schema.CarParkSchema.validate(payload, {
       abortEarly: false
     });
-    
+
     if (error) {
       next(error);
       return;
@@ -93,7 +93,7 @@ const park = async (req, res, next) => {
     }
     // get the nearest spot
     const nearestSlot = await parkingService.getNearestSpot();
-    
+
     if (!nearestSlot) {
       // if all slots are filled, return
       res.status(400).send({ error: 'All slots filled' });
@@ -102,8 +102,8 @@ const park = async (req, res, next) => {
     // add car details to the nearest slot
     await db.collection('slots').doc(nearestSlot.id)
       .set({ alloted: true, car: payload });
-    
-      res.status(200).send({ id: nearestSlot.id });
+
+    res.status(200).send({ id: nearestSlot.id });
   } catch (error) {
     console.log(error);
     res.status(error.status || 500).send({
@@ -130,8 +130,8 @@ const unpark = async (req, res, next) => {
     // un park the car from that slot
     await db.collection('slots').doc(slot.id)
       .set({ alloted: false, car: null });
-    
-      // return freed car from the slot
+
+    // return freed car from the slot
     res.status(200).send({ car: slot.data().car });
   } catch (error) {
     console.log(error);
@@ -152,7 +152,7 @@ const getCar = async (req, res, next) => {
     }
     // get car(s) based on the params
     const snapshot = await db.collection('slots').where(`car.${req.params.field}`, '==', req.params.value).get();
-    
+
     if (!snapshot || !snapshot.docs.length) {
       // return if there are no such cars
       res.status(400).send({ error: 'No such car(s) in the parking' });
