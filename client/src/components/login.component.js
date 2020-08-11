@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import "./login.css";
 
@@ -22,7 +24,25 @@ export default class Login extends Component {
     }
 
     handleSubmit(event) {
-        event.preventDefault();
+      event.preventDefault();
+
+      axios.post('http://localhost:8080/auth/login', this.state,{
+        headers: {
+          'Access-Control-Allow-Origin' : '*',
+          'Access-Control-Allow-Methods' : 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+        }
+        }).then(res =>{
+          console.log(res.data)
+          if(res.data){
+            localStorage.setItem('token', res.data.tokens.token)
+            window.location = '/'
+          }
+          //toast(`Car (${this.state.number}) is parked against the slot id: ${res.data.id}`);
+        })
+          .catch((error) => {
+            //toast('Car Already Parked')
+          //console.log(error.data.error);
+      })
     }
 
     onChangeEmail(e) {

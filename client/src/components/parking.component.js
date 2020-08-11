@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import DatePicker from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default class Parking extends Component {
   constructor(props) {
@@ -14,26 +14,13 @@ export default class Parking extends Component {
     this.onSubmit = this.onSubmit.bind(this);
 
     this.state = {
-      number: 0,
+      number: '',
       type: '',
       color: '',
     }
   }
 
   componentDidMount() {
-    // axios.get('http://localhost:5000/users/')
-    //   .then(response => {
-    //     if (response.data.length > 0) {
-    //       this.setState({
-    //         users: response.data.map(user => user.username),
-    //         username: response.data[0].username
-    //       })
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   })
-
   }
 
   onChangeNumber(e) {
@@ -64,18 +51,27 @@ export default class Parking extends Component {
     e.preventDefault();
 
     console.log(this.state);
-    // const exercise = {
-    //   // username: this.state.username,
-    //   // description: this.state.description,
-    //   // duration: this.state.duration,
-    //   // date: this.state.date
-    // }
+    const parking = {
+      number: this.state.number,
+      color: this.state.color,
+      type: this.state.type
+    }
+    console.log(parking);
 
-    // console.log(exercise);
-
-    // axios.post('http://localhost:5000/exercises/add', exercise)
-    //   .then(res => console.log(res.data));
-
+    axios.post('http://localhost:8080/parking/park', parking,{
+      headers: {
+        'Access-Control-Allow-Origin' : '*',
+        'Access-Control-Allow-Methods' : 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    }).then(res =>{
+      console.log(res.data)
+      toast(`Car (${this.state.number}) is parked against the slot id: ${res.data.id}`);
+    })
+      .catch((error) => {
+        toast('Car Already Parked')
+      //console.log(error.data.error);
+    })
     // window.location = '/';
   }
 
@@ -86,7 +82,7 @@ export default class Parking extends Component {
       <form onSubmit={this.onSubmit}>
         <div className="form-group"> 
           <label>Number: </label>
-          <input  type="number"
+          <input  type="text"
               required
               className="form-control"
               value={this.state.number}
@@ -125,6 +121,7 @@ export default class Parking extends Component {
           <input type="submit" value="Park New Car" className="btn btn-primary" />
         </div>
       </form>
+      <ToastContainer/>
     </div>
     )
   }

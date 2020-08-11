@@ -10,34 +10,31 @@ import FindCars from "./components/find-cars.component";
 import Login from "./components/login.component";
 import Logout from "./components/logout.component";
 
-//localStorage.setItem('loggedIn', true)
-const isLoggedIn = localStorage.getItem('loggedIn');
-console.log(isLoggedIn);
 
 function App() {
-  if(isLoggedIn){
+  const isLoggedIn = localStorage.getItem('token') ? true : false;
+
     return (
       <Router>
-      <div className="container">
-      <Navbar />
-      <br/>
-      <Route path="/" exact component={SlotsList} />
-      <Route path="/unparking" component={UnParking} />
-      <Route path="/parking" component={Parking} />
-      <Route path="/findCars" component={FindCars} />
-      <Route path="/logout" component={Logout} />
-      </div>
-    </Router>
+          { !isLoggedIn ?
+            <div className="container">
+            <Route path="/" exact component={Login} />
+            <Route path="/login" exact component={Login} />
+            </div>
+            : 
+            <div className="container">
+            <Navbar />
+            <br/>
+            <Route path="/" exact component={SlotsList} />
+            <Route path="/unparking" component={UnParking} />
+            <Route path="/parking" component={Parking} />
+            <Route path="/findCars" component={FindCars} />
+            <Route path="/logout" component={Logout} />
+            </div>
+          }     
+      </Router>
+      
     )
-  } else if (!isLoggedIn) {
-  return (
-    <Router>
-    <div className="container">
-    <Route path="/login" exact component={Login} />
-    </div>
-    </Router>
-  );
-  }
 }
 
 export default App;

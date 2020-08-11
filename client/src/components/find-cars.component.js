@@ -1,5 +1,15 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+const Cars = props => (
+  <tr>
+    <td>{props.slot.number}</td>
+    <td>{props.slot.color}</td>
+    <td>{props.slot.type}</td>
+  </tr>
+)
 
 export default class FindCars extends Component {
   constructor(props) {
@@ -7,40 +17,68 @@ export default class FindCars extends Component {
 
     this.onChangeType = this.onChangeType.bind(this);
     this.onChangeNumber = this.onChangeNumber.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
+    //this.onSubmit = this.onSubmit.bind(this);
 
     this.state = {
-      types: ['Sedan', 'Suv'],
-      number: 0
+      number: 0,
+      type:'',
+      cars: []
     }
+  }
+
+  getCarsByType(){
+    axios.get(`http://localhost:8080/parking/car/type/${this.state.type}`,{
+      headers: {
+        'Access-Control-Allow-Origin' : '*',
+        'Access-Control-Allow-Methods' : 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    }).then(res =>{
+      console.log(res.data)
+      this.setState({ cars: res.data })
+    }).catch((error) => {
+        //toast('Slot Already Available. No car is Parked there.')
+      // console.log(error);
+    })
+  }
+
+  getCarsByNumber(){
+    axios.get(`http://localhost:8080/parking/car/number/${this.state.number}`,{
+      headers: {
+        'Access-Control-Allow-Origin' : '*',
+        'Access-Control-Allow-Methods' : 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    }).then(res =>{
+      console.log(res.data)
+      this.setState({ cars: res.data })
+    }).catch((error) => {
+        //toast('Slot Already Available. No car is Parked there.')
+      // console.log(error);
+    })
   }
 
   onChangeType(e) {
     this.setState({
-      type: e.target.value
-    })
+      type: e.target.value,
+      number: ''
+      }, () => {
+      this.getCarsByType();
+    });
   }
 
   onChangeNumber(e) {
     this.setState({
-      number: e.target.value
-    })
+      number: e.target.value,
+      type: ''
+      }, () => {
+      this.getCarsByNumber();
+    });
   }
 
-  onSubmit(e) {
-    e.preventDefault();
-
-    const user = {
-      username: this.state.username
-    }
-
-    console.log(user);
-
-    axios.post('http://localhost:5000/users/add', user)
-      .then(res => console.log(res.data));
-
-    this.setState({
-      username: ''
+  carsList() {
+    return this.state.cars.map(currentcar => {
+      return <Cars slot={currentcar} key={currentcar.number}/>;
     })
   }
 
@@ -51,34 +89,43 @@ export default class FindCars extends Component {
         <form onSubmit={this.onSubmit}>
           <div className="form-group"> 
             <label>Car Type: </label>
-            <select ref="userInput"
+            <input  type="text"
               required
               className="form-control"
               value={this.state.type}
-              onChange={this.onChangeType}>
-              {
-                this.state.types.map(function(type) {
-                  return <option 
-                    key={type}
-                    value={type}>{type}
-                    </option>;
-                })
-              }
-          </select>
+              onChange={this.onChangeType}
+              />
           </div>
           <div className="form-group"> 
           <label>Car Number: </label>
-          <input  type="number"
+          <input  type="text"
               required
               className="form-control"
               value={this.state.number}
               onChange={this.onChangeNumber}
               />
         </div>
-          <div className="form-group">
-            <input type="submit" value="Find Cars" className="btn btn-primary" />
-          </div>
+          {/* <div className="form-group row">
+            <input type="submit" value="Find Cars By Type" className="btn btn-primary" />
+          </div> */}
         </form>
+        { this.state.cars.length > 0 ?
+          <div>
+          <span className="row" style={{paddingLeft:'14px'}}><h3>Available Cars</h3>({this.state.cars.length})</span>
+          <table className="table">
+            <thead className="thead-light">
+              <tr>
+                <th>Number</th>
+                <th>Color</th>
+                <th>Type</th>
+              </tr>
+            </thead>
+            <tbody>
+              { this.carsList() }
+            </tbody>
+          </table>
+        </div>: null
+        } 
       </div>
     )
   }

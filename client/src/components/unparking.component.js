@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import DatePicker from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default class UnParking extends Component {
   constructor(props) {
@@ -30,17 +30,20 @@ export default class UnParking extends Component {
     e.preventDefault();
     console.log(this.state);
 
-    // const exercise = {
-    //   username: this.state.username,
-    //   description: this.state.description,
-    //   duration: this.state.duration,
-    //   date: this.state.date
-    // }
-
-    // console.log(exercise);
-
-    // axios.post('http://localhost:5000/exercises/update/' + this.props.match.params.id, exercise)
-    //   .then(res => console.log(res.data));
+    axios.post(`http://localhost:8080/parking/unpark/${this.state.slot}`, '',{
+      headers: {
+        'Access-Control-Allow-Origin' : '*',
+        'Access-Control-Allow-Methods' : 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    }).then(res =>{
+      console.log(res.data)
+      toast(`Car (${res.data.car.number}) is unparked against the slot id: ${this.state.slot}`);
+    })
+      .catch((error) => {
+        toast('Slot Already Available. No car is Parked there.')
+      // console.log(error);
+    })
 
     // window.location = '/';
   }
@@ -64,6 +67,7 @@ export default class UnParking extends Component {
           <input type="submit" value="UnPark Car" className="btn btn-primary" />
         </div>
       </form>
+      <ToastContainer/>
     </div>
     )
   }

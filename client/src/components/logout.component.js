@@ -4,8 +4,8 @@ export default class Logout extends Component {
     constructor(props){
     super(props);
 
-    localStorage.setItem("loggedIn", false)
-    window.location = '/login'
+    localStorage.removeItem("token");
+    window.location = '/'
     }
 
     render() {
