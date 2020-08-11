@@ -1,7 +1,7 @@
 const { db } = require('../services/firestore');
 const helpers = require('../helpers')
 
-const validateCarNumber = async (car) => {
+const existingCarNumber = async (car) => {
   try {
     const snapshot = await db.collection('slots').where('alloted', '==', true).where('car.number', '==', car.number).get();
     return snapshot.docs.length || false;
@@ -42,6 +42,6 @@ const getNearestSpot = async () => {
 // }
 
 module.exports = {
-  validateCarNumber,
+  existingCarNumber,
   getNearestSpot
 }

@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors')
 
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, './.env') });
@@ -11,10 +12,12 @@ const parkingRouter = require('./routes/parking');
 
 const app = express();
 
+// pkg middlewares
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }))
+app.use(cors())
 
-// middleware for route
+// routes middlewares
 app.use('/auth', jwtMiddleware, authRouter);
 app.use('/parking', jwtMiddleware, parkingRouter);
 
