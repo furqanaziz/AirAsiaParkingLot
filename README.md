@@ -67,5 +67,66 @@ Currently, .env.example have credentials for already established firestore on te
 ## Flow Chart for App
 ![Flow Chart for App](docs/park-flow-chart.png)
 
+## Project structure
+### Client
+```
+public
+ | - index.html
+ | - required files by index.html
+src
+ | - components // all components of react
+ | - services // service / api calls
+ | - App.js // main file for react app
+ | - App.css // css for App.js
+ | - index.js // to render App.js
+Dockerfile // contains docker instructions
+package.json // npm dependencies for client app
+
+```
+### API
+```
+constants
+ | - index.js
+ | - schema.js // to hold constants and validation constants for schemas
+ | - values.js // to hold constant values to be used accross the application
+controllers
+ | - authCtrl // for auth routes
+ | - parkingCtrl // for parking routes
+helpers
+ | - getCarsFromSlots.js // get cars objects from slots array of objects or single array
+ | - serializeSlots.js // returns slots with their ids and data
+ | - index.js // to collectively export helpers
+middlewares
+ | - error.js // handle error of joi and app level
+ | - jwt.js // token middleware
+ | - index.js // to collectively export middlewares
+routes
+ | - auth // auth routes
+ | - parking // parking routes
+scripts
+ | - seed-slots.js // db seed script
+services
+ | - firestore.js // to connect to firestore
+ | - parking.js // service functions for parking
+.env.example for env variables
+app.js // main launching file for api
+Dockerfile // contains docker instructions
+package.json // npm dependencies for client app
+```
+### docs
+```
+API-DOCS.md // API documentation
+api-postman-collection.json // parking lot api postman collection, to import and hit the routes locally
+database-erd.png // erd 
+frontend-demo.mp4 // demo video with client
+park-flow-chart.png // collective flow chart
+TL_Backend_FS.pdf // requirement document given
+```
+### Root
+````
+.dockerignore // ignore while dockerizing
+.gitignore // ignore for git
+README.md // Read me file for the api and client
+````
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
