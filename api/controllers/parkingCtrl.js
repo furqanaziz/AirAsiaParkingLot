@@ -3,21 +3,6 @@ const helpers = require('../helpers');
 const { schema } = require('../constants');
 const parkingService = require('../services/parking');
 
-// method to initialize slots in db
-const seedParking = async (req, res, next) => {
-  try {
-    for (let i = 1; i <= 150; i++) {
-      const id = '' + i;
-      await db.collection('slots').doc(id).set({ alloted: false, car: null });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({
-      error,
-    });
-  }
-};
-
 // get all slots with details
 const getAll = async (req, res, next) => {
   try {
@@ -176,5 +161,4 @@ module.exports = {
   park,
   unpark,
   getCar,
-  seedParking,
 };
