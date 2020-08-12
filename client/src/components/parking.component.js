@@ -3,6 +3,11 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import api from '../services/api';
 
+
+export const parkCar= async (parkingData) => {
+  return await api.post(`/parking/park`, parkingData)
+}
+
 export default class Parking extends Component {
   constructor(props) {
     super(props);
@@ -54,14 +59,13 @@ export default class Parking extends Component {
       type: this.state.type,
     };
 
-    api
-      .post(`/parking/park`, parking)
+    parkCar(parking)
       .then((res) => {
         toast(`Car (${this.state.number}) is parked against the slot id: ${res.data.id}`);
       })
       .catch((error) => {
         toast('Car Already Parked');
-      });
+    });
   }
 
   render() {

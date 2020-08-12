@@ -10,6 +10,15 @@ const Cars = (props) => (
   </tr>
 );
 
+export const getCarsByTypeData= async (type) => {
+  return await api.get(`/parking/car/type/${type}`)
+}
+
+export const getCarsByNumberData= async (number) => {
+  if(number === '') return;
+  return await api.get(`/parking/car/number/${number}`)
+}
+
 export default class FindCars extends Component {
   constructor(props) {
     super(props);
@@ -18,32 +27,32 @@ export default class FindCars extends Component {
     this.onChangeNumber = this.onChangeNumber.bind(this);
 
     this.state = {
-      number: 0,
+      number: '',
       type: '',
       cars: [],
     };
   }
 
   getCarsByType() {
-    api
-      .get(`/parking/car/type/${this.state.type}`)
+    getCarsByTypeData(this.state.type)
       .then((res) => {
         this.setState({ cars: res.data });
       })
       .catch((error) => {
+        this.setState({ cars: [] });
         //toast('Slot Already Available. No car is Parked there.')
-      });
+    });
   }
 
   getCarsByNumber() {
-    api
-      .get(`/parking/car/number/${this.state.number}`)
+    getCarsByNumberData(this.state.number)
       .then((res) => {
         this.setState({ cars: res.data });
       })
       .catch((error) => {
+        this.setState({ cars: [] });
         //toast('Slot Already Available. No car is Parked there.')
-      });
+    });
   }
 
   onChangeType(e) {
@@ -71,9 +80,9 @@ export default class FindCars extends Component {
   }
 
   carsList() {
-    return this.state.cars.map((currentcar) => {
+    return this.state.cars.length > 0 ? this.state.cars.map((currentcar) => {
       return <Cars slot={currentcar} key={currentcar.number} />;
-    });
+    }) : ''
   }
 
   render() {

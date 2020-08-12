@@ -5,6 +5,10 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import api from '../services/api';
 
+export const login= async (state) => {
+  return await api.post(`/auth/login`, state)
+}
+
 export default class Login extends Component {
   constructor(props) {
     super(props);
@@ -26,10 +30,10 @@ export default class Login extends Component {
   handleSubmit(event) {
     event.preventDefault();
 
-    api
-      .post(`/auth/login`, this.state)
+      login(this.state)
       .then((res) => {
         if (res.data) {
+          console.log(res);
           localStorage.setItem('token', res.data.tokens.token);
           window.location = '/';
         }

@@ -9,6 +9,10 @@ const Slots = (props) => (
   </tr>
 );
 
+export const availableSlots= async () => {
+  return await api.get(`/parking/available`)
+}
+
 export default class SlotsList extends Component {
   constructor(props) {
     super(props);
@@ -17,14 +21,13 @@ export default class SlotsList extends Component {
   }
 
   componentDidMount() {
-    api
-      .get(`/parking/available`)
-      .then((response) => {
-        this.setState({ slots: response.data });
-      })
-      .catch((error) => {
-        // console.error(error);
-      });
+
+    availableSlots().then(response => {
+          this.setState({ slots: response.data })
+        })
+        .catch((error) => {
+          console.log(error);
+    })
   }
 
   slotsList() {

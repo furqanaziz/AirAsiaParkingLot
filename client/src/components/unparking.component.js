@@ -3,6 +3,10 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import api from '../services/api';
 
+export const unparkCar= async (slotNumber) => {
+  return await api.post(`/parking/unpark/${slotNumber}`, '')
+}
+
 export default class UnParking extends Component {
   constructor(props) {
     super(props);
@@ -26,8 +30,7 @@ export default class UnParking extends Component {
   onSubmit(e) {
     e.preventDefault();
 
-    api
-      .post(`/parking/unpark/${this.state.slot}`, '')
+    unparkCar(this.state.slot)
       .then((res) => {
         toast(`Car (${res.data.car.number}) is unparked against the slot id: ${this.state.slot}`);
       })
