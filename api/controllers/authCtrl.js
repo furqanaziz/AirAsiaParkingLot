@@ -9,7 +9,7 @@ const login = async (req, res, next) => {
   try {
     const payload = req.body;
     const { error } = schema.LoginSchema.validate(payload, {
-      abortEarly: false
+      abortEarly: false,
     });
     if (error) {
       next(error);
@@ -23,79 +23,86 @@ const login = async (req, res, next) => {
       if (passwordMatched) {
         const tokens = createTokens({ email: user.email });
         // update user tokens
-        const response = await db.collection('users').doc(snapshot.docs[0].id)
+        await db
+          .collection('users')
+          .doc(snapshot.docs[0].id)
           .set({ ...user, token: tokens.token, refreshToken: tokens.refreshToken });
-        console.log(response)
+
         res.send({
           tokens,
-          email: user.email
+          email: user.email,
         });
-        return
+        return;
       } else {
         res.status(400).send({
-          error: "Invalid password for the email"
-        })
-        return
+          error: 'Invalid password for the email',
+        });
+        return;
       }
     } else {
       res.status(400).send({
-        error: "Invalid credentials for user"
-      })
-      return
+        error: 'Invalid credentials for user',
+      });
+      return;
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(error.status || 500).send({
       success: false,
       message: error.message || 'Could not login',
     });
   }
-}
+};
 
 const logout = async (req, res, next) => {
   try {
     const token = getToken(req);
     if (!token) {
       res.status(200).send({
-        message: 'User already logged out'
-      })
+        message: 'User already logged out',
+      });
     }
     const jwtResponse = jwt.verify(token, process.env.JWT_TOKEN_SECRET);
     if (!jwtResponse || !jwtResponse.user) {
       res.status(200).send({
-        message: 'User already logged out'
-      })
+        message: 'User already logged out',
+      });
     }
-    const userSnapshot = await db.collection('users').where('email', '==', jwtResponse.user.email).get();
+    const userSnapshot = await db
+      .collection('users')
+      .where('email', '==', jwtResponse.user.email)
+      .get();
     if (userSnapshot && userSnapshot.docs.length) {
       const user = userSnapshot.docs[0].data();
-      const response = await db.collection('users').doc(userSnapshot.docs[0].id)
+      const response = await db
+        .collection('users')
+        .doc(userSnapshot.docs[0].id)
         .set({ ...user, token: null, refreshToken: null });
       if (response) {
         res.status(200).send({
-          message: 'logout successfull'
-        })
+          message: 'logout successfull',
+        });
       } else {
         res.status(500).send({
-          error: 'Could not logout user'
-        })
+          error: 'Could not logout user',
+        });
       }
     } else {
       res.status(400).send({
-        error: "User not found with registered email"
-      })
-      return
+        error: 'User not found with registered email',
+      });
+      return;
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(error.status || 500).send({
       success: false,
       message: error.message || 'Could not logout',
     });
   }
-}
+};
 
 module.exports = {
   login,
-  logout
-}
+  logout,
+};

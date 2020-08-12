@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const parkingCtrl = require('../controllers/parkingCtrl')
+const parkingCtrl = require('../controllers/parkingCtrl');
 
 router.get('/', parkingCtrl.getAll);
 router.get('/available', parkingCtrl.getAvailableSpots);

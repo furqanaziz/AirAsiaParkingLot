@@ -6,7 +6,6 @@ const SECRET_REFRESH_TOKEN = process.env.JWT_UPDATE_TOKEN_SECRET;
 
 // method to verify and check token in db
 const jwtMiddleware = async (req, res, next) => {
-
   // get token from header
   const token = getToken(req);
 
@@ -19,18 +18,21 @@ const jwtMiddleware = async (req, res, next) => {
     const response = jwt.verify(token, SECRET);
 
     // check if the same token exists for the user logging in
-    const tokenResponse = await db.collection('users')
-      .where('email', '==', response.user.email).where('token', '==', token).get();
+    const tokenResponse = await db
+      .collection('users')
+      .where('email', '==', response.user.email)
+      .where('token', '==', token)
+      .get();
 
     // if user has different token, return error
     if (!tokenResponse || !tokenResponse.docs.length) {
       res.status(403).json({
-        error: 'Invalid token'
-      })
+        error: 'Invalid token',
+      });
       return;
     }
 
-    // attach verified token user with req 
+    // attach verified token user with req
     req.user = response.user;
   } catch (err) {
     res.status(403).json({ error: 'Invalid token' });
@@ -41,27 +43,27 @@ const jwtMiddleware = async (req, res, next) => {
 };
 
 // method to create token and refresh token
-const createTokens = user => {
+const createTokens = (user) => {
   // get required params
   const { id, email, type } = user;
 
   // configure and create tokens
   const token = jwt.sign(
     {
-      user: { id, email, type }
+      user: { id, email, type },
     },
     SECRET,
     {
-      expiresIn: '72h'
+      expiresIn: '72h',
     }
   );
   const refreshToken = jwt.sign(
     {
-      user: user.id
+      user: user.id,
     },
     SECRET_REFRESH_TOKEN,
     {
-      expiresIn: '7d'
+      expiresIn: '7d',
     }
   );
 
@@ -75,7 +77,7 @@ function getToken(req) {
   if (!header) {
     return null;
   }
-  
+
   // split it to get Bearer
   const parts = header.split(' ');
   if (parts.length !== 2) {
@@ -92,5 +94,5 @@ function getToken(req) {
 module.exports = {
   jwtMiddleware,
   createTokens,
-  getToken
+  getToken,
 };

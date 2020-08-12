@@ -1,5 +1,5 @@
 module.exports = {
   jwtMiddleware: require('./jwt').jwtMiddleware,
   getToken: require('./jwt').getToken,
-  errorsMiddleware: require('./error')
-}
+  errorsMiddleware: require('./error'),
+};

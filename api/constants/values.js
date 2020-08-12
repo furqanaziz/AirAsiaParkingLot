@@ -1,3 +1,3 @@
 module.exports = {
-  PASSWORD_SALT_ROUNDS: 10
-}
+  PASSWORD_SALT_ROUNDS: 10,
+};

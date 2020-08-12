@@ -7,17 +7,16 @@ const parkingService = require('../services/parking');
 const seedParking = async (req, res, next) => {
   try {
     for (let i = 1; i <= 150; i++) {
-      const id = "" + i;
-      await db.collection('slots').doc(id)
-        .set({ alloted: false, car: null });
+      const id = '' + i;
+      await db.collection('slots').doc(id).set({ alloted: false, car: null });
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).send({
-      error
-    })
+      error,
+    });
   }
-}
+};
 
 // get all slots with details
 const getAll = async (req, res, next) => {
@@ -25,10 +24,10 @@ const getAll = async (req, res, next) => {
     const snapshot = await db.collection('slots').get();
     res.status(200).send(helpers.serailizeSlots(snapshot));
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(error.status || 400).send(error);
   }
-}
+};
 
 // get all available slots
 const getAvailableSpots = async (req, res, next) => {
@@ -36,13 +35,13 @@ const getAvailableSpots = async (req, res, next) => {
     const snapshot = await db.collection('slots').where('alloted', '==', false).get();
     res.status(200).send(helpers.serailizeSlots(snapshot));
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(error.status || 500).send({
       success: false,
       error: error.message || 'Could not get available spots',
     });
   }
-}
+};
 
 // get count of available slots
 const getAvailableSpotsCount = async (req, res, next) => {
@@ -50,13 +49,13 @@ const getAvailableSpotsCount = async (req, res, next) => {
     const snapshot = await db.collection('slots').where('alloted', '==', false).get();
     res.status(200).send({ count: snapshot.docs.length });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(error.status || 500).send({
       success: false,
       error: error.message || 'Could not get count of available slots',
     });
   }
-}
+};
 
 // get all alloted/parked slots
 const getAllotedSpots = async (req, res, next) => {
@@ -64,13 +63,13 @@ const getAllotedSpots = async (req, res, next) => {
     const snapshot = await db.collection('slots').where('alloted', '==', true).get();
     res.status(200).send(helpers.serailizeSlots(snapshot));
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(error.status || 500).send({
       success: false,
       message: error.message || 'Could not get available spots',
     });
   }
-}
+};
 
 // park the car to a slot
 const park = async (req, res, next) => {
@@ -78,7 +77,7 @@ const park = async (req, res, next) => {
     const payload = req.body;
     // validate fields for car
     const { error } = schema.CarParkSchema.validate(payload, {
-      abortEarly: false
+      abortEarly: false,
     });
 
     if (error) {
@@ -89,7 +88,7 @@ const park = async (req, res, next) => {
     const alreadyParked = await parkingService.existingCarNumber(payload);
     if (alreadyParked) {
       res.status(400).send({ error: 'Car already parked' });
-      return
+      return;
     }
     // get the nearest spot
     const nearestSlot = await parkingService.getNearestSpot();
@@ -97,21 +96,20 @@ const park = async (req, res, next) => {
     if (!nearestSlot) {
       // if all slots are filled, return
       res.status(400).send({ error: 'All slots filled' });
-      return
+      return;
     }
     // add car details to the nearest slot
-    await db.collection('slots').doc(nearestSlot.id)
-      .set({ alloted: true, car: payload });
+    await db.collection('slots').doc(nearestSlot.id).set({ alloted: true, car: payload });
 
     res.status(200).send({ id: nearestSlot.id });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(error.status || 500).send({
       success: false,
       error: error.message || 'Could not park',
     });
   }
-}
+};
 
 // un park car from a slot
 const unpark = async (req, res, next) => {
@@ -128,19 +126,18 @@ const unpark = async (req, res, next) => {
       return;
     }
     // un park the car from that slot
-    await db.collection('slots').doc(slot.id)
-      .set({ alloted: false, car: null });
+    await db.collection('slots').doc(slot.id).set({ alloted: false, car: null });
 
     // return freed car from the slot
     res.status(200).send({ car: slot.data().car });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(error.status || 500).send({
       success: false,
       error: error.message || 'Could not un park from slot',
     });
   }
-}
+};
 
 // get car based on its fields
 const getCar = async (req, res, next) => {
@@ -151,7 +148,10 @@ const getCar = async (req, res, next) => {
       return;
     }
     // get car(s) based on the params
-    const snapshot = await db.collection('slots').where(`car.${req.params.field}`, '==', req.params.value).get();
+    const snapshot = await db
+      .collection('slots')
+      .where(`car.${req.params.field}`, '==', req.params.value)
+      .get();
 
     if (!snapshot || !snapshot.docs.length) {
       // return if there are no such cars
@@ -160,13 +160,13 @@ const getCar = async (req, res, next) => {
     }
     res.status(200).send(helpers.getCarsFromSlots(helpers.serailizeSlots(snapshot)));
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(error.status || 500).send({
       success: false,
       error: error.message || 'Could not get cars based on the params',
     });
   }
-}
+};
 
 module.exports = {
   getAll,
@@ -176,5 +176,5 @@ module.exports = {
   park,
   unpark,
   getCar,
-  seedParking
-}
+  seedParking,
+};

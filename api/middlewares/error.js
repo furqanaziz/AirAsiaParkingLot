@@ -1,5 +1,5 @@
 // serialize errors by Joi package
-const serializeJoiError = error => {
+const serializeJoiError = (error) => {
   const details = error.details.reduce((acc, item) => {
     if (!acc[item.path[0]]) {
       acc[item.path[0]] = item.message;
@@ -8,13 +8,12 @@ const serializeJoiError = error => {
   }, {});
   return {
     success: false,
-    message: details
+    message: details,
   };
 };
 
 // app level error middleware
 const errorsMiddleware = async (err, req, res, next) => {
-  console.log('Server error:');
   // JWT auth errors
   if (err && err.status === 403) {
     res.status(403).json({ err: err.message });

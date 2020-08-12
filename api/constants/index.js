@@ -3,5 +3,5 @@ const values = require('./values');
 
 module.exports = {
   schema,
-  values
-}
+  values,
+};
